@@ -1,0 +1,23 @@
+name: build
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install dotfiles
+        run: |
+          git clone https://github.com/Ran350/dotfiles $HOME/dotfiles
+          cd $HOME/dotfiles
+          yes | make install
