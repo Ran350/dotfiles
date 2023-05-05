@@ -2,153 +2,120 @@
 
 dotfiles=$HOME/dotfiles
 . $dotfiles/etc/header
+OS=$($dotfiles/bin/os)
 
-### Start install script
-DOTFILES_GITHUB="https://github.com/Ran350/dotfiles"
-
-dotfiles_logo="
+echo "
 ██████╗  ██████╗ ████████╗███████╗██╗██╗     ███████╗███████╗
 ██╔══██╗██╔═══██╗╚══██╔══╝██╔════╝██║██║     ██╔════╝██╔════╝
 ██║  ██║██║   ██║   ██║   █████╗  ██║██║     █████╗  ███████╗
 ██║  ██║██║   ██║   ██║   ██╔══╝  ██║██║     ██╔══╝  ╚════██║
 ██████╔╝╚██████╔╝   ██║   ██║     ██║███████╗███████╗███████║
 ╚═════╝  ╚═════╝    ╚═╝   ╚═╝     ╚═╝╚══════╝╚══════╝╚══════╝
-
-*** WHAT IS INSIDE? ***
-1. Download my dotfiles from ${DOTFILES_GITHUB}
-2. Symlinking dotfiles to your home directory
-3. Install packages
-
-*** HOW TO INSTALL? ***
-See the README for documentation.
-Licensed under the MIT license.
 "
+echo "
+*** ATTENTION ***
+This script can change your entire setup.
+I recommend to read first. You can even copy commands one by one."
 
-printf "${BOLD}"
-echo "$dotfiles_logo"
-printf "${NORMAL}"
-
-log "*** ATTENTION ***"
-log "This script can change your entire setup."
-log "I recommend to read first. You can even copy commands one by one."
-echo ""
-
-if ! yesno "$(warn 'Are you sure you want to install?')"; then
+if ! yesno "Are you sure you want to continue?"; then
 	error 'Installation failed. Nothing changed.'
 	exit 1
 fi
+
+log "========================== Start Installation =========================="
 
 #--------------------------------------------------------------#
 ##        packages                                            ##
 #--------------------------------------------------------------#
 echo ""
-info "Start install packages."
+info "----- Packages -----"
 
-OS=$($dotfiles/bin/os)
-
-if yesno "$(warn 'Are you sure you want to install packages?')"; then
-	if [ "$(echo $OS | grep 'Darwin')" ]; then
-		# info "Start softwareupdate"
-		# softwareupdate --install -a
-
-		if ! has brew; then
-			info "Homebrew is not installed!!"
-			/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/main/install.sh)"
-		fi
-
-		info "Start install..."
-		PACKAGES="git wget curl tmux coreutils autoconf bat cmake fontconfig gcc gh grep pyenv nvm"
+if [ "$(echo $OS | grep 'Darwin')" ]; then
+	info "brew update"
+	brew update
+	brew upgrade
+	brew cleanup
+	PACKAGES="git wget curl tmux coreutils autoconf bat cmake fontconfig gcc gh grep pyenv nvm"
+	if yesno "Are you sure you want to install the following packages?: ${PACKAGES}"; then
 		brew install $PACKAGES
-
-	elif [ "$(echo $OS | grep 'Ubuntu')" ]; then
-		info "apt update"
-		sudo apt update
-
-		info "Start install..."
-		PACKAGES="git wget curl tmux coreutils make cmake unzip bat xsel"
-		sudo apt install -y $PACKAGES
-
-	elif [ "$(echo $OS | grep 'RedHat')" ]; then
-		info "yum update"
-		sudo yum update
-
-		info "Start install..."
-		PACKAGES="git wget curl tmux coreutils make cmake unzip gcc"
-		sudo yum install -y $PACKAGES
-
-	else
-		error "Your platform ($(uname -a)) is not supported."
-		exit 1
 	fi
+
+elif [ "$(echo $OS | grep 'Ubuntu')" ]; then
+	info "apt update"
+	sudo apt update
+	PACKAGES="git wget curl tmux coreutils make cmake unzip bat xsel"
+	if yesno "Are you sure you want to install the following packages?: ${PACKAGES}"; then
+		sudo apt install -y $PACKAGES
+	fi
+
+elif [ "$(echo $OS | grep 'RedHat')" ]; then
+	info "yum update"
+	sudo yum update
+	PACKAGES="git wget curl tmux coreutils make cmake unzip gcc"
+	if yesno "Are you sure you want to install the following packages?: ${PACKAGES}"; then
+		sudo yum install -y $PACKAGES
+	fi
+
+else
+	error "Your platform ($(uname -a)) is not supported."
+	exit 1
 fi
 
 #--------------------------------------------------------------#
 ##        zsh                                                 ##
 #--------------------------------------------------------------#
 echo ""
-info "Start install zsh."
-
-if yesno "$(warn 'Are you sure you want to install zsh?')"; then
+info "----- zsh -----"
+if [ -x "/bin/zsh" ]; then
+	info "The zsh is already installed!!"
+fi
+if yesno "Are you sure you want to install zsh?"; then
 	ZSH_VERSION=5.9
 	wget https://sourceforge.net/projects/zsh/files/zsh/${ZSH_VERSION}/zsh-${ZSH_VERSION}.tar.xz/download -O zsh-${ZSH_VERSION}.tar.xz
 	tar xvf zsh-${ZSH_VERSION}.tar.xz
 
-	cd zsh-${ZSH_VERSION}
+	cd zsh-${ZSH_VERSION} || exit
 	./configure --enable-multibyte
 	sudo make
 	sudo make install
 
-	cd $dotfiles
+	cd $dotfiles || exit
 	rm -rf zsh-${ZSH_VERSION}*
 fi
 
-info "Start install zprezto."
-if [ ! -e $HOME/.zprezto ]; then
-	git clone https://github.com/sorin-ionescu/prezto $HOME/.zprezto
-	cd $HOME/.zprezto
-	git pull && git submodule update --init --recursive
-	cd $dotfiles
-else
+echo ""
+info "----- prezto -----"
+if [ -e $HOME/.zprezto ]; then
 	info "The zprezto is already installed!!"
+fi
+if yesno "Are you sure you want to install prezto?"; then
+	git clone https://github.com/sorin-ionescu/prezto $HOME/.zprezto
+	cd $HOME/.zprezto || exit
+	git pull && git submodule update --init --recursive
+	cd $dotfiles || exit
 fi
 
 #--------------------------------------------------------------#
 ##        fzf                                                 ##
 #--------------------------------------------------------------#
 echo ""
-info "Start install fzf."
+info "----- fzf -----"
 
-if [ ! -e $HOME/.fzf ]; then
-	git clone https://github.com/junegunn/fzf $HOME/.fzf
-	$HOME/.fzf/install
-else
+if [ -e $HOME/.fzf ]; then
 	info "The fzf is already installed!!"
 fi
-
-#--------------------------------------------------------------#
-##        rust                                                ##
-#--------------------------------------------------------------#
-echo ""
-info "Start install rust."
-
-if [ ! -e $HOME/.cargo ]; then
-	curl https://sh.rustup.rs -sSf | sh
-else
-	info "The rust is already installed!!"
-fi
-
-if yesno "$(warn 'Are you sure you want to install rust packages?')"; then
-	PACKAGES="exa bat fd-find procs ripgrep starship"
-	$HOME/.cargo/bin/cargo install $PACKAGES
+if yesno "Are you sure you want to install fzf?"; then
+	git clone https://github.com/junegunn/fzf $HOME/.fzf
+	$HOME/.fzf/install
 fi
 
 #--------------------------------------------------------------#
 ##        nerd font                                           ##
 #--------------------------------------------------------------#
 echo ""
-info "Start install nerd font."
+info "----- nerd font -----"
 
-if yesno "$(warn 'Are you sure you want to install nerd font?')"; then
+if yesno "Are you sure you want to install nerd font?"; then
 	# source code pro
 	wget https://github.com/adobe-fonts/source-code-pro/archive/2.010R-ro/1.030R-it.zip
 	unzip 1.030R-it.zip
@@ -158,11 +125,11 @@ if yesno "$(warn 'Are you sure you want to install nerd font?')"; then
 
 	# nerd font
 	git clone https://github.com/ryanoasis/nerd-fonts.git
-	cd ./nerd-fonts
+	cd ./nerd-fonts || exit
 	./install.sh SourceCodePro
 
 	# cleanup
-	cd $dotfiles
+	cd $dotfiles || exit
 	rm -rf 1.030R-it.zip
 	rm -rf source-code-pro-2.010R-ro-1.030R-it
 	rm -rf ./nerd-fonts
@@ -171,17 +138,35 @@ fi
 #--------------------------------------------------------------#
 ##           docker                                           ##
 #--------------------------------------------------------------#
-sudo apt-get update
-sudo apt install ca-certificates curl gnupg lsb-release
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-echo \
-	"deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
-  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list >/dev/null
-sudo apt-get update
-sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
-# sudo docker run hello-world
+echo ""
+info "----- docker -----"
+
+if yesno "Are you sure you want to install docker?"; then
+	if [ "$(echo $OS | grep 'Darwin')" ]; then
+		info "TODO: あとで実装する"
+	fi
+
+	if [ "$(echo $OS | grep 'Ubuntu')" ]; then
+		info docker install
+		sudo apt-get update
+		sudo apt install ca-certificates curl gnupg lsb-release
+		curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+		echo \
+			"deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+ 			$(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list >/dev/null
+		sudo apt-get update
+		sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+	fi
+
+	if [ "$(echo $OS | grep 'RedHat')" ]; then
+		info docker install
+		sudo yum install -y yum-utils
+		sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+		sudo yum install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+		sudo systemctl start docker
+	fi
+fi
 
 log ""
-log "--------------------------------------------------------------------"
 info "Installation completed."
 info "Please run following command \"exec \$SHELL\" to run zsh."
