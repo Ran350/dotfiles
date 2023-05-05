@@ -29,72 +29,45 @@ clean() {
 #--------------------------------------------------------------#
 echo ""
 info "bash"
-
 clean $HOME/.bashrc
-clean $HOME/.bash_profile
 
 #--------------------------------------------------------------#
 ##        zsh                                                 ##
 #--------------------------------------------------------------#
 echo ""
 info "zsh"
-
 clean $HOME/.zshrc
-clean $HOME/.zshenv
-clean $HOME/.zprofile
-
-#--------------------------------------------------------------#
-##        fish                                                ##
-#--------------------------------------------------------------#
-echo ""
-info "fish"
-
-clean $HOME/.config/fish
 
 #--------------------------------------------------------------#
 ##        prompt                                              ##
 #--------------------------------------------------------------#
 echo ""
 info "prompt"
-
 clean $HOME/.zpreztorc
-clean $HOME/.config/starship.toml
+clean $HOME/.p10k.zsh
 
 #--------------------------------------------------------------#
 ##        git                                                 ##
 #--------------------------------------------------------------#
 echo ""
 info "git"
-
 clean $HOME/.gitconfig
 clean $HOME/.config/git
-clean $HOME/.config/jesseduffield/lazygit
 
 #--------------------------------------------------------------#
 ##        python                                              ##
 #--------------------------------------------------------------#
 echo ""
 info "python"
-
 clean $HOME/.config/flake8
 clean $HOME/.config/pep8
 clean $HOME/.config/mypy
-
-#--------------------------------------------------------------#
-##        vim/neovim                                          ##
-#--------------------------------------------------------------#
-echo ""
-info "vim/neovim"
-
-clean $HOME/.vim
-clean $HOME/.config/nvim
 
 #--------------------------------------------------------------#
 ##        Xmodmap                                          ##
 #--------------------------------------------------------------#
 echo ""
 info "Xmodmap"
-
 clean $HOME/.Xmodmap
 
 #--------------------------------------------------------------#
@@ -102,7 +75,6 @@ clean $HOME/.Xmodmap
 #--------------------------------------------------------------#
 echo ""
 info "tmux"
-
 clean $HOME/.tmux.conf
 clean $HOME/.tmux.conf.local
 clean $HOME/.tmux
