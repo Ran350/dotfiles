@@ -4,7 +4,6 @@
 #   / /_(__  ) / / / /  / /__
 #  /___/____/_/ /_/_/   \___/
 
-
 #--------------------------------------------------------------#
 ##        source zprezto                                      ##
 #--------------------------------------------------------------#
@@ -12,46 +11,61 @@
 [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
 
 #--------------------------------------------------------------#
-##        source each PC settings                             ##
-#--------------------------------------------------------------#
-[ -f ~/dotfiles/local/local.conf ] && source ~/dotfiles/local/local.conf
-
-#--------------------------------------------------------------#
-##        set 256color                                        ##
-#--------------------------------------------------------------#
-TERM=xterm-256color
-
-#--------------------------------------------------------------#
 ##        zsh options                                         ##
 #--------------------------------------------------------------#
 # zsh補完
-autoload -U compinit && compinit
+autoload -U compinit && compinit -u
+
 # カラー設定
-autoload -Uz colors && colors
-#単語の入力途中でもTab補完を有効化
+autoload -Uz colors && colors && zstyle ':completion:*' list-colors "${LSCOLORS}"
+
+setopt EXTENDED_GLOB
+
+# 単語の入力途中でもTab補完を有効化
 setopt complete_in_word
-# 補完候補をハイライト
-zstyle ':completion:*:default' menu select=1
-# キャッシュの利用による補完の高速化
-zstyle ':completion::complete:*' use-cache true
-#大文字、小文字を区別せず補完する
-zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
-# Ctrl+Dでzshを終了しない
-setopt ignore_eof
-# 同じコマンドをヒストリに残さない
-setopt hist_ignore_all_dups
-# スペースから始まるコマンド行はヒストリに残さない
-setopt hist_ignore_space
-# ヒストリに保存するときに余分なスペースを削除する
-setopt hist_reduce_blanks
+
 # 補完リストの表示間隔を狭くする
 setopt list_packed
+
+# Ctrl+Dでzshを終了しない
+setopt ignore_eof
+
+# 同じコマンドをヒストリに残さない
+setopt hist_ignore_all_dups
+
+# スペースから始まるコマンド行はヒストリに残さない
+setopt hist_ignore_space
+
+# ヒストリに保存するときに余分なスペースを削除する
+setopt hist_reduce_blanks
+
 # cdなしでディレクトリを移動
 setopt auto_cd
-# cdでディレクトリの移動履歴表示
+
+# cd - でTabで、cdでディレクトリの移動履歴表示
 setopt auto_pushd
-# コマンドのうち間違え防止
+
+# コマンドの打ち間違いを指摘してくれる
 setopt correct
+SPROMPT="correct: $RED%R$DEFAULT -> $GREEN%r$DEFAULT ? [Yes/No/Abort/Edit] => "
+
+# 日本語ファイル名を表示可能にする
+setopt print_eight_bit
+
+# beep を無効にする
+setopt no_beep
+
+# フローコントロールを無効にする
+setopt no_flow_control
+
+# '#' 以降をコメントとして扱う
+setopt interactive_comments
+
+# 重複したディレクトリを追加しない
+setopt pushd_ignore_dups
+
+# 高機能なワイルドカード展開を使用する
+setopt extended_glob
 
 #--------------------------------------------------------------#
 ##        fzf settings                                        ##
@@ -64,42 +78,65 @@ export FZF_DEFAULT_OPTS='--height 40% --reverse --preview "bat --theme=TwoDark -
 #--------------------------------------------------------------#
 ##        alias                                               ##
 #--------------------------------------------------------------#
-alias l='exa --icons'
-alias ls='l'
-alias la='l -a'
-alias ll='l -l'
+alias l='lsd'
+alias ls='lsd'
+alias la='lsd -a'
+alias ll='lsd -l'
+alias l1='lsd -1'
 alias sl='ls'
+alias cat='batcat --paging=never'
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
 alias dc='cd'
 alias c='clear'
-alias -g L='| less'
-alias -g G='| grep'
-# editor
-alias vi='vim'
-alias cot="open -a CotEditor"
-alias edit="open -a textedit"
-# git
-alias gs='git status --short --branch'
-alias gg='git graph'
-alias ga='git add -A'
-alias gc='git commit -m'
-alias gps='git push'
-alias gp='git pull'
-alias gf='git fetch'
-alias gm='git merge'
-alias gr='git reset'
-alias gd='git diff'
-alias gco='git checkout'
-alias gsw='git switch'
-alias gb='git branch'
-alias lg='lazygit'
-# clipboard
-if which pbcopy >/dev/null 2>&1 ; then
-    # Mac
-    alias -g C='| pbcopy'
-elif which xsel >/dev/null 2>&1 ; then
-    # Linux
-    alias -g C='| xsel --input --clipboard'
-elif which putclip >/dev/null 2>&1 ; then
-    # Cygwin
-     alias -g C='| putclip'
+alias mkdir='mkdir -p'
+alias :q="exit"
+alias sudo='sudo '
+
+alias y='yarn'
+alias py='python'
+alias pien='pipenv'
+alias v='code'
+
+alias cdd='cd ~/develop'
+
+if which xsel >/dev/null 2>&1; then
+    alias pbcopy='xsel --input --clipboard'
 fi
+
+# --------------------------------------------------
+#  $ tree でディレクトリ構成表示
+# --------------------------------------------------
+
+# alias tree="pwd;find . | sort | sed '1d;s/^\.//;s/\/\([^/]*\)$/|--\1/;s/\/[^/|]*/| /g'"
+
+# --------------------------------------------------
+#  環境変数
+# --------------------------------------------------
+
+# Homebrew
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# pyenv
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/shims:$PATH"
+eval "$(pyenv init --path)"
+eval "$(pyenv init -)"
+
+# Rust
+source $HOME/.cargo/env
+export PATH="$PATH:$HOME/.cargo/bin"
+
+export LC_ALL=ja_JP.UTF-8
+export LANG=ja_JP.UTF-8
+export EDITOR='vim'
+export VISUAL='vim'
+export PAGER='less'
+
+# rust
+export PATH=$PATH:$HOME/.cargo/bin
+# local bin
+export PATH=$PATH:$HOME/.local/bin
+# dotfiles bin
+export PATH=$PATH:$HOME/dotfiles/bin
