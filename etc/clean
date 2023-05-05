@@ -4,7 +4,7 @@ dotfiles=$HOME/dotfiles
 . $dotfiles/etc/header
 
 echo ""
-info "Clean config files..."
+log "========================== Start Cleaning =========================="
 
 if ! yesno "$(warn 'Are you sure you want to cleanup?')"; then
   info "Skip cleanup"
@@ -78,3 +78,5 @@ info "tmux"
 clean $HOME/.tmux.conf
 clean $HOME/.tmux.conf.local
 clean $HOME/.tmux
+
+log "Cleaning completed."

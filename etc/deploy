@@ -1,72 +1,80 @@
 #!/usr/bin/env bash
 
-dotfiles=$HOME/dotfiles
+dotfiles="$HOME"/dotfiles
 . $dotfiles/etc/header
 
 echo ""
-info "Creating symbolic link..."
+log "========================== Start Deployment =========================="
 
 if [ ! -e "$HOME/.local/bin" ]; then
-  mkdir -p $HOME/.local/bin
+  mkdir -p "$HOME"/.local/bin
 fi
 
 #--------------------------------------------------------------#
 ##        bash                                                ##
 #--------------------------------------------------------------#
 echo ""
-info "bash"
-symlink $dotfiles/config/bash/.bashrc $HOME/.bashrc
+info "deploy bash config"
+symlink "$dotfiles"/config/bash/.bashrc "$HOME"/.bashrc
 
 #--------------------------------------------------------------#
 ##        zsh                                                 ##
 #--------------------------------------------------------------#
 echo ""
-info "zsh"
-symlink $dotfiles/config/zsh/.zshrc $HOME/.zshrc
+info "deploy zsh config"
+symlink "$dotfiles"/config/zsh/.zshrc "$HOME"/.zshrc
 
 #--------------------------------------------------------------#
 ##        prompt                                              ##
 #--------------------------------------------------------------#
 echo ""
-info "prompt"
-symlink $dotfiles/config/prompt/.zpreztorc $HOME/.zpreztorc
-symlink $dotfiles/config/prompt/.p10k.zsh $HOME/.p10k.zsh
+info "deploy prompt config"
+symlink "$dotfiles"/config/prompt/.zpreztorc "$HOME"/.zpreztorc
+symlink "$dotfiles"/config/prompt/.p10k.zsh "$HOME"/.p10k.zsh
 
 #--------------------------------------------------------------#
 ##        git                                                 ##
 #--------------------------------------------------------------#
 echo ""
-info "git"
-mkdir -p $HOME/.config/git
-symlink $dotfiles/config/git/.gitconfig $HOME/.gitconfig
-symlink $dotfiles/config/git/ignore $HOME/.config/git/ignore
+info "deploy git config"
+mkdir -p "$HOME"/.config/git
+symlink "$dotfiles"/config/git/.gitconfig "$HOME"/.gitconfig
+symlink "$dotfiles"/config/git/ignore "$HOME"/.config/git/ignore
+
+read -p "git user.email: " -r email
+if [ -n "$email" ]; then
+  git config --global user.email "$email"
+fi
 
 #--------------------------------------------------------------#
 ##        python                                              ##
 #--------------------------------------------------------------#
 echo ""
-info "python"
-symlink $dotfiles/config/python/flake8 $HOME/.config/flake8
-symlink $dotfiles/config/python/pep8 $HOME/.config/pep8
-symlink $dotfiles/config/python/mypy $HOME/.config/mypy
+info "deploy python config"
+symlink "$dotfiles"/config/python/flake8 "$HOME"/.config/flake8
+symlink "$dotfiles"/config/python/pep8 "$HOME"/.config/pep8
+symlink "$dotfiles"/config/python/mypy "$HOME"/.config/mypy
 
 #--------------------------------------------------------------#
 ##        Xmodmap                                          ##
 #--------------------------------------------------------------#
 echo ""
-info "Xmodmap"
-symlink $dotfiles/config/Xmodmap/.Xmodmap $HOME/.Xmodmap
+info "deploy Xmodmap config"
+symlink "$dotfiles"/config/Xmodmap/.Xmodmap "$HOME"/.Xmodmap
 
 #--------------------------------------------------------------#
 ##        tmux                                                ##
 #--------------------------------------------------------------#
 echo ""
-info "tmux"
-symlink $dotfiles/config/tmux/.tmux.conf $HOME/.tmux.conf
-symlink $dotfiles/config/tmux/.tmux.conf.local $HOME/.tmux.conf.local
-symlink $dotfiles/config/tmux/.tmux $HOME/.tmux
+info "tmux config"
+symlink "$dotfiles"/config/tmux/.tmux.conf "$HOME"/.tmux.conf
+symlink "$dotfiles"/config/tmux/.tmux.conf.local "$HOME"/.tmux.conf.local
+symlink "$dotfiles"/config/tmux/.tmux "$HOME"/.tmux
 
-if [ ! -e $HOME/.tmux/plugins/tpm ]; then
-  git clone https://github.com/tmux-plugins/tpm $HOME/.tmux/plugins/tpm
-  $HOME/.tmux/plugins/tpm/bin/install_plugins
+if [ ! -e "$HOME"/.tmux/plugins/tpm ]; then
+  git clone https://github.com/tmux-plugins/tpm "$HOME"/.tmux/plugins/tpm
+  "$HOME"/.tmux/plugins/tpm/bin/install_plugins
 fi
+
+echo ""
+info "Deployment completed."

@@ -82,6 +82,7 @@ alias l='lsd'
 alias ls='lsd'
 alias la='lsd -a'
 alias ll='lsd -l'
+alias lla='lsd -la'
 alias l1='lsd -1'
 alias sl='ls'
 alias cat='batcat --paging=never'
@@ -124,10 +125,6 @@ export PATH="$PYENV_ROOT/shims:$PATH"
 eval "$(pyenv init --path)"
 eval "$(pyenv init -)"
 
-# Rust
-source $HOME/.cargo/env
-export PATH="$PATH:$HOME/.cargo/bin"
-
 export LC_ALL=ja_JP.UTF-8
 export LANG=ja_JP.UTF-8
 export EDITOR='vim'
@@ -135,7 +132,7 @@ export VISUAL='vim'
 export PAGER='less'
 
 # rust
-export PATH=$PATH:$HOME/.cargo/bin
+# export PATH=$PATH:$HOME/.cargo/bin
 # local bin
 export PATH=$PATH:$HOME/.local/bin
 # dotfiles bin
