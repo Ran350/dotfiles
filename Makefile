@@ -1,5 +1,16 @@
 export dotfiles=${HOME}/dotfiles
 
+install: update init clean deploy
+	@exec $$SHELL
+
+update: ## Fetch changes for this repo
+	git pull origin main
+
+init: ## Setup environment settings
+	@echo '==> Start to install app using pkg manager.'
+	@echo ''
+	bash ${dotfiles}/etc/init
+
 clean: ## Clean config files
 	@echo '==> Start to clean your config files.'
 	@echo ''
@@ -9,17 +20,6 @@ deploy: clean ## Create symlink
 	@echo '==> Start to deploy dotfiles to home directory.'
 	@echo ''
 	bash ${dotfiles}/etc/deploy
-
-init: ## Setup environment settings
-	@echo '==> Start to install app using pkg manager.'
-	@echo ''
-	bash ${dotfiles}/etc/init
-
-update: ## Fetch changes for this repo
-	git pull origin main
-
-install: update init clean deploy
-	@exec $$SHELL
 
 test:
 	@echo ${dotfiles}

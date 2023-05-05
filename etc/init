@@ -6,7 +6,6 @@ dotfiles=$HOME/dotfiles
 ### Start install script
 DOTFILES_GITHUB="https://github.com/Ran350/dotfiles"
 
-
 dotfiles_logo="
 ██████╗  ██████╗ ████████╗███████╗██╗██╗     ███████╗███████╗
 ██╔══██╗██╔═══██╗╚══██╔══╝██╔════╝██║██║     ██╔════╝██╔════╝
@@ -26,7 +25,7 @@ Licensed under the MIT license.
 "
 
 printf "${BOLD}"
-echo   "$dotfiles_logo"
+echo "$dotfiles_logo"
 printf "${NORMAL}"
 
 log "*** ATTENTION ***"
@@ -35,7 +34,7 @@ log "I recommend to read first. You can even copy commands one by one."
 echo ""
 
 if ! yesno "$(warn 'Are you sure you want to install?')"; then
-  error 'Installation failed. Nothing changed.'
+	error 'Installation failed. Nothing changed.'
 	exit 1
 fi
 
@@ -48,7 +47,7 @@ info "Start install packages."
 OS=$($dotfiles/bin/os)
 
 if yesno "$(warn 'Are you sure you want to install packages?')"; then
-	if [ "$(echo $OS | grep 'Darwin')" ] ; then
+	if [ "$(echo $OS | grep 'Darwin')" ]; then
 		# info "Start softwareupdate"
 		# softwareupdate --install -a
 
@@ -58,28 +57,28 @@ if yesno "$(warn 'Are you sure you want to install packages?')"; then
 		fi
 
 		info "Start install..."
-		PACKAGES="git wget curl tmux fish coreutils autoconf automake cmake ninja libtool pkg-config gettext fontconfig jq"
+		PACKAGES="git wget curl tmux coreutils autoconf bat cmake fontconfig gcc gh grep pyenv nvm"
 		brew install $PACKAGES
 
-	elif [ "$(echo $OS | grep 'Ubuntu')" ] ; then
-    info "apt update"
+	elif [ "$(echo $OS | grep 'Ubuntu')" ]; then
+		info "apt update"
 		sudo apt update
 
 		info "Start install..."
-		PACKAGES="git wget curl tmux fish coreutils make cmake unzip"
+		PACKAGES="git wget curl tmux coreutils make cmake unzip bat xsel"
 		sudo apt install -y $PACKAGES
 
-	elif [ "$(echo $OS | grep 'RedHat')" ] ; then
-    info "yum update"
+	elif [ "$(echo $OS | grep 'RedHat')" ]; then
+		info "yum update"
 		sudo yum update
 
 		info "Start install..."
-		PACKAGES="git wget curl tmux fish coreutils make cmake unzip ncurses-devel gcc"
+		PACKAGES="git wget curl tmux coreutils make cmake unzip gcc"
 		sudo yum install -y $PACKAGES
 
 	else
-	  error "Your platform ($(uname -a)) is not supported."
-	  exit 1
+		error "Your platform ($(uname -a)) is not supported."
+		exit 1
 	fi
 fi
 
@@ -90,25 +89,25 @@ echo ""
 info "Start install zsh."
 
 if yesno "$(warn 'Are you sure you want to install zsh?')"; then
-	ZSH_VERSION=5.8
-  wget https://sourceforge.net/projects/zsh/files/zsh/${ZSH_VERSION}/zsh-${ZSH_VERSION}.tar.xz/download -O zsh-${ZSH_VERSION}.tar.xz
-  tar xvf zsh-${ZSH_VERSION}.tar.xz
+	ZSH_VERSION=5.9
+	wget https://sourceforge.net/projects/zsh/files/zsh/${ZSH_VERSION}/zsh-${ZSH_VERSION}.tar.xz/download -O zsh-${ZSH_VERSION}.tar.xz
+	tar xvf zsh-${ZSH_VERSION}.tar.xz
 
-  cd zsh-${ZSH_VERSION}
-  ./configure --enable-multibyte
-  sudo make
-  sudo make install
+	cd zsh-${ZSH_VERSION}
+	./configure --enable-multibyte
+	sudo make
+	sudo make install
 
 	cd $dotfiles
-  rm -rf zsh-${ZSH_VERSION}*
+	rm -rf zsh-${ZSH_VERSION}*
 fi
 
 info "Start install zprezto."
 if [ ! -e $HOME/.zprezto ]; then
-  git clone https://github.com/sorin-ionescu/prezto $HOME/.zprezto
-  cd $HOME/.zprezto
-  git pull && git submodule update --init --recursive
-  cd $dotfiles
+	git clone https://github.com/sorin-ionescu/prezto $HOME/.zprezto
+	cd $HOME/.zprezto
+	git pull && git submodule update --init --recursive
+	cd $dotfiles
 else
 	info "The zprezto is already installed!!"
 fi
@@ -119,10 +118,9 @@ fi
 echo ""
 info "Start install fzf."
 
-
 if [ ! -e $HOME/.fzf ]; then
-  git clone https://github.com/junegunn/fzf $HOME/.fzf
-  $HOME/.fzf/install
+	git clone https://github.com/junegunn/fzf $HOME/.fzf
+	$HOME/.fzf/install
 else
 	info "The fzf is already installed!!"
 fi
@@ -134,7 +132,7 @@ echo ""
 info "Start install rust."
 
 if [ ! -e $HOME/.cargo ]; then
-  curl https://sh.rustup.rs -sSf | sh
+	curl https://sh.rustup.rs -sSf | sh
 else
 	info "The rust is already installed!!"
 fi
@@ -142,34 +140,6 @@ fi
 if yesno "$(warn 'Are you sure you want to install rust packages?')"; then
 	PACKAGES="exa bat fd-find procs ripgrep starship"
 	$HOME/.cargo/bin/cargo install $PACKAGES
-fi
-
-#--------------------------------------------------------------#
-##        anyenv                                              ##
-#--------------------------------------------------------------#
-echo ""
-info "Start install anyenv."
-
-if [ ! -e $HOME/.anyenv ]; then
-  git clone https://github.com/anyenv/anyenv $HOME/.anyenv
-  mkdir -p $HOME/.anyenv/plugins
-  git clone https://github.com/znz/anyenv-update.git $HOME/.anyenv/plugins/anyenv-update
-  $HOME/.anyenv/bin/anyenv install --init
-
-	$HOME/.anyenv/bin/anyenv install jenv
-	$HOME/.anyenv/envs/jenv/bin/jenv enable-plugin export
-else
-	info "The anyenv is already installed!!"
-fi
-
-#--------------------------------------------------------------#
-##        vim & neovim                                        ##
-#--------------------------------------------------------------#
-echo ""
-info "Start install vim & neovim."
-
-if yesno "$(warn 'Are you sure you want to install vim & neovim?')"; then
-	$dotfiles/bin/install-vim
 fi
 
 #--------------------------------------------------------------#
@@ -198,6 +168,18 @@ if yesno "$(warn 'Are you sure you want to install nerd font?')"; then
 	rm -rf ./nerd-fonts
 fi
 
+#--------------------------------------------------------------#
+##           docker                                           ##
+#--------------------------------------------------------------#
+sudo apt-get update
+sudo apt install ca-certificates curl gnupg lsb-release
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+echo \
+	"deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list >/dev/null
+sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+# sudo docker run hello-world
 
 log ""
 log "--------------------------------------------------------------------"
