@@ -1,26 +1,38 @@
 [user]
-    name = Ran350
-    email = abe12@mccc.jp
+name = Ran350
+email = ***@gmail.com
+
 [filter "lfs"]
-    clean = git-lfs clean -- %f
-    smudge = git-lfs smudge -- %f
-    process = git-lfs filter-process
-    required = true
+clean = git-lfs clean -- %f
+smudge = git-lfs smudge -- %f
+process = git-lfs filter-process
+required = true
+
 [color]
-    ui = auto
+ui = auto
+diff = auto
+status = auto
+branch = auto
+
 [gui]
-    encoding = utf-8
+encoding = utf-8
+
 [receive]
-    denyNonFastforwards = false
+denyNonFastforwards = false
+
 [core]
-    quotepath = false
-	symlinks = true
-	commentChar = ";"
+quotepath = false
+symlinks = true
+commentChar = ";"
+
 [alias]
-    graph = log --graph --date=short --decorate=short --pretty=format:'%Cgreen%h %Creset%cd %Cblue%cn %Cred%d %Creset%s'
+graph = log --graph --date=short --decorate=short --pretty=format:'%Cgreen%h %Creset%cd %Cblue%cn %Cred%d %Creset%s'
+
 [pull]
-	rebase = false
+rebase = false
+
 [credential]
-	helper = store
+helper = store
+
 [init]
-	defaultBranch = main
+defaultBranch = main
