@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
 
-dotfiles=$HOME/dotfiles
-. $dotfiles/etc/header
-OS=$($dotfiles/bin/os)
-
 echo "
 ██████╗  ██████╗ ████████╗███████╗██╗██╗     ███████╗███████╗
 ██╔══██╗██╔═══██╗╚══██╔══╝██╔════╝██║██║     ██╔════╝██╔════╝
@@ -24,23 +20,36 @@ fi
 
 log "========================== Start Installation =========================="
 
+dotfiles=$HOME/dotfiles
+. $dotfiles/etc/header
+OS=$($dotfiles/bin/os)
+
+is_mac="$(echo $OS | grep 'Darwin')"
+is_ubuntu="$(echo $OS | grep 'Ubuntu')"
+is_redhat="$(echo $OS | grep 'RedHat')"
+
+if ! [[ "$is_mac" || "$is_ubuntu" || "$is_redhat" ]]; then
+	error "Your platform ($(uname -a)) is not supported."
+	exit 1
+fi
+
 #--------------------------------------------------------------#
 ##        packages                                            ##
 #--------------------------------------------------------------#
 echo ""
 info "----- Packages -----"
 
-if [ "$(echo $OS | grep 'Darwin')" ]; then
+if [ "$is_mac" ]; then
 	info "brew update"
 	brew update
 	brew upgrade
 	brew cleanup
-	PACKAGES="git wget curl tmux coreutils autoconf bat cmake fontconfig gcc gh grep pyenv nvm"
+	PACKAGES="git wget curl tmux coreutils autoconf bat cmake fontconfig gcc gh grep pyenv"
 	if yesno "Are you sure you want to install the following packages?: ${PACKAGES}"; then
 		brew install $PACKAGES
 	fi
 
-elif [ "$(echo $OS | grep 'Ubuntu')" ]; then
+elif [ "$is_ubuntu" ]; then
 	info "apt update"
 	sudo apt update
 	PACKAGES="git wget curl tmux coreutils make cmake unzip bat xsel"
@@ -48,17 +57,13 @@ elif [ "$(echo $OS | grep 'Ubuntu')" ]; then
 		sudo apt install -y $PACKAGES
 	fi
 
-elif [ "$(echo $OS | grep 'RedHat')" ]; then
+elif [ "$is_redhat" ]; then
 	info "yum update"
 	sudo yum update
 	PACKAGES="git wget curl tmux coreutils make cmake unzip gcc"
 	if yesno "Are you sure you want to install the following packages?: ${PACKAGES}"; then
 		sudo yum install -y $PACKAGES
 	fi
-
-else
-	error "Your platform ($(uname -a)) is not supported."
-	exit 1
 fi
 
 #--------------------------------------------------------------#
@@ -167,6 +172,13 @@ if yesno "Are you sure you want to install docker?"; then
 	fi
 fi
 
-log ""
+#--------------------------------------------------------------#
+##        nvm                                                 ##
+#--------------------------------------------------------------#
+echo ""
+info "----- nvm -----"
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+
+echo ""
 info "Installation completed."
 info "Please run following command \"exec \$SHELL\" to run zsh."
