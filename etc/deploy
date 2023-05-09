@@ -41,11 +41,6 @@ mkdir -p "$HOME"/.config/git
 symlink "$dotfiles"/config/git/.gitconfig "$HOME"/.gitconfig
 symlink "$dotfiles"/config/git/ignore "$HOME"/.config/git/ignore
 
-read -p "git user.email: " -r email
-if [ -n "$email" ]; then
-  git config --global user.email "$email"
-fi
-
 #--------------------------------------------------------------#
 ##        python                                              ##
 #--------------------------------------------------------------#

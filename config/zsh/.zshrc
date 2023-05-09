@@ -4,6 +4,10 @@
 #   / /_(__  ) / / / /  / /__
 #  /___/____/_/ /_/_/   \___/
 
+is_mac="$(echo $OS | grep 'Darwin')"
+is_ubuntu="$(echo $OS | grep 'Ubuntu')"
+is_redhat="$(echo $OS | grep 'RedHat')"
+
 #--------------------------------------------------------------#
 ##        source zprezto                                      ##
 #--------------------------------------------------------------#
@@ -96,7 +100,7 @@ alias :q="exit"
 alias sudo='sudo '
 
 alias y='yarn'
-alias py='python'
+alias py='python3'
 alias pien='pipenv'
 alias v='code'
 
@@ -116,8 +120,10 @@ fi
 #  環境変数
 # --------------------------------------------------
 
-# Homebrew
-eval "$(/opt/homebrew/bin/brew shellenv)"
+if [ "$is_mac" ]; then
+    # Homebrew
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
 
 # pyenv
 export PYENV_ROOT="$HOME/.pyenv"

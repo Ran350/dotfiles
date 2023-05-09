@@ -182,3 +182,11 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
 echo ""
 info "Installation completed."
 info "Please run following command \"exec \$SHELL\" to run zsh."
+
+#--------------------------------------------------------------#
+##        Python                                                ##
+#--------------------------------------------------------------#
+# TODO: python
+# TODO: pyenv
+# TODO: pep8
+# TODO: mypy

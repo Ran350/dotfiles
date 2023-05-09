@@ -4,10 +4,6 @@
 #   / /_/ / /_/ (__  ) / / /
 #  /_.___/\__,_/____/_/ /_/
 
-#--------------------------------------------------------------#
-##        source starship                                     ##
-#--------------------------------------------------------------#
-eval "$(starship init bash)"
 export BASH_SILENCE_DEPRECATION_WARNING=1
 
 [ -f ~/dotfiles/local/local.conf ] && source ~/dotfiles/local/local.conf

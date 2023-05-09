@@ -7,6 +7,7 @@ update: ## Fetch changes for this repo
 	git pull origin main
 
 init: ## Setup environment settings
+	export PATH=$PATH:$HOME/dotfiles/bin
 	@echo '==> Start to install app using pkg manager.'
 	@echo ''
 	bash ${dotfiles}/etc/init
