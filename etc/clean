@@ -37,6 +37,7 @@ clean $HOME/.bashrc
 echo ""
 info "zsh"
 clean $HOME/.zshrc
+clean $HOME/.zprofile
 
 #--------------------------------------------------------------#
 ##        prompt                                              ##
