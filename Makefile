@@ -1,4 +1,8 @@
 export dotfiles=${HOME}/dotfiles
+export is_mac="$(echo $OS | grep 'Darwin')"
+export is_ubuntu="$(echo $OS | grep 'Ubuntu')"
+export is_redhat="$(echo $OS | grep 'RedHat')"
+export OS=$($dotfiles/bin/os)
 
 install: update init clean deploy
 	@exec $$SHELL

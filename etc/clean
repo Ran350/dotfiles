@@ -12,15 +12,15 @@ if ! yesno "$(warn 'Are you sure you want to cleanup?')"; then
 fi
 
 tmp=$dotfiles/tmp
-if [ -e $tmp ]; then
-  rm -rf $tmp
+if [ -e "$tmp" ]; then
+  rm -rf "$tmp"
 fi
-mkdir -p $tmp
+mkdir -p "$tmp"
 
 clean() {
-  if [ -e $1 ]; then
+  if [ -e "$1" ]; then
     log "mv $1 $tmp"
-    mv -f $1 $tmp
+    mv -f "$1" "$tmp"
   fi
 }
 
@@ -29,55 +29,55 @@ clean() {
 #--------------------------------------------------------------#
 echo ""
 info "bash"
-clean $HOME/.bashrc
+clean "$HOME"/.bashrc
 
 #--------------------------------------------------------------#
 ##        zsh                                                 ##
 #--------------------------------------------------------------#
 echo ""
 info "zsh"
-clean $HOME/.zshrc
-clean $HOME/.zprofile
+clean "$HOME"/.zshrc
+clean "$HOME"/.zprofile
 
 #--------------------------------------------------------------#
 ##        prompt                                              ##
 #--------------------------------------------------------------#
 echo ""
 info "prompt"
-clean $HOME/.zpreztorc
-clean $HOME/.p10k.zsh
+clean "$HOME"/.zpreztorc
+clean "$HOME"/.p10k.zsh
 
 #--------------------------------------------------------------#
 ##        git                                                 ##
 #--------------------------------------------------------------#
 echo ""
 info "git"
-clean $HOME/.gitconfig
-clean $HOME/.config/git
+clean "$HOME"/.gitconfig
+clean "$HOME"/.config/git
 
 #--------------------------------------------------------------#
 ##        python                                              ##
 #--------------------------------------------------------------#
 echo ""
 info "python"
-clean $HOME/.config/flake8
-clean $HOME/.config/pep8
-clean $HOME/.config/mypy
+clean "$HOME"/.config/flake8
+clean "$HOME"/.config/pep8
+clean "$HOME"/.config/mypy
 
 #--------------------------------------------------------------#
 ##        Xmodmap                                          ##
 #--------------------------------------------------------------#
 echo ""
 info "Xmodmap"
-clean $HOME/.Xmodmap
+clean "$HOME"/.Xmodmap
 
 #--------------------------------------------------------------#
 ##        tmux                                                ##
 #--------------------------------------------------------------#
 echo ""
 info "tmux"
-clean $HOME/.tmux.conf
-clean $HOME/.tmux.conf.local
-clean $HOME/.tmux
+clean "$HOME"/.tmux.conf
+clean "$HOME"/.tmux.conf.local
+clean "$HOME"/.tmux
 
 log "Cleaning completed."

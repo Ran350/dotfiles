@@ -4,10 +4,6 @@
 #   / /_(__  ) / / / /  / /__
 #  /___/____/_/ /_/_/   \___/
 
-is_mac="$(echo $OS | grep 'Darwin')"
-is_ubuntu="$(echo $OS | grep 'Ubuntu')"
-is_redhat="$(echo $OS | grep 'RedHat')"
-
 #--------------------------------------------------------------#
 ##        source zprezto                                      ##
 #--------------------------------------------------------------#
@@ -89,15 +85,17 @@ alias ll='lsd -l'
 alias lla='lsd -la'
 alias l1='lsd -1'
 alias sl='ls'
-alias cat='batcat --paging=never'
-alias rm='rm -i'
+alias cat='bat --paging=never'
 alias cp='cp -i'
 alias mv='mv -i'
 alias dc='cd'
 alias c='clear'
 alias mkdir='mkdir -p'
-alias :q="exit"
+alias :q='exit'
 alias sudo='sudo '
+if type trash-put &>/dev/null; then
+    alias rm=trash-put
+fi
 
 alias y='yarn'
 alias py='python3'
@@ -146,4 +144,5 @@ export PATH=$PATH:$HOME/dotfiles/bin
 
 # nvm
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion

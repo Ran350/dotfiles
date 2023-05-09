@@ -55,11 +55,11 @@ is_exists() {
 
 # check package
 has() {
-  type "$1" > /dev/null 2>&1
+  type "$1" >/dev/null 2>&1
 }
 
 yesno() {
-	$dotfiles/bin/yesno "$1"
+  "$dotfiles"/bin/yesno "$1"
 }
 
 # create symlink

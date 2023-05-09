@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# headerファイルの読み込み
+. "$dotfiles"/etc/header
+
 echo "
 ██████╗  ██████╗ ████████╗███████╗██╗██╗     ███████╗███████╗
 ██╔══██╗██╔═══██╗╚══██╔══╝██╔════╝██║██║     ██╔════╝██╔════╝
@@ -20,14 +23,6 @@ fi
 
 log "========================== Start Installation =========================="
 
-dotfiles=$HOME/dotfiles
-. $dotfiles/etc/header
-OS=$($dotfiles/bin/os)
-
-is_mac="$(echo $OS | grep 'Darwin')"
-is_ubuntu="$(echo $OS | grep 'Ubuntu')"
-is_redhat="$(echo $OS | grep 'RedHat')"
-
 if ! [[ "$is_mac" || "$is_ubuntu" || "$is_redhat" ]]; then
 	error "Your platform ($(uname -a)) is not supported."
 	exit 1
@@ -44,17 +39,17 @@ if [ "$is_mac" ]; then
 	brew update
 	brew upgrade
 	brew cleanup
-	PACKAGES="git wget curl tmux coreutils autoconf bat cmake fontconfig gcc gh grep pyenv"
+	PACKAGES="autoconf bat cmake coreutils curl fontconfig gcc gh git grep lsd pyenv tmux trash-cli wget"
 	if yesno "Are you sure you want to install the following packages?: ${PACKAGES}"; then
-		brew install $PACKAGES
+		brew install "$PACKAGES"
 	fi
 
 elif [ "$is_ubuntu" ]; then
 	info "apt update"
 	sudo apt update
-	PACKAGES="git wget curl tmux coreutils make cmake unzip bat xsel"
+	PACKAGES="bat build-essential cmake coreutils curl git lsd tmux trash-cli unzip wget xsel"
 	if yesno "Are you sure you want to install the following packages?: ${PACKAGES}"; then
-		sudo apt install -y $PACKAGES
+		sudo apt install -y "$PACKAGES"
 	fi
 
 elif [ "$is_redhat" ]; then
@@ -62,7 +57,7 @@ elif [ "$is_redhat" ]; then
 	sudo yum update
 	PACKAGES="git wget curl tmux coreutils make cmake unzip gcc"
 	if yesno "Are you sure you want to install the following packages?: ${PACKAGES}"; then
-		sudo yum install -y $PACKAGES
+		sudo yum install -y "$PACKAGES"
 	fi
 fi
 
@@ -73,8 +68,7 @@ echo ""
 info "----- zsh -----"
 if [ -x "/bin/zsh" ]; then
 	info "The zsh is already installed!!"
-fi
-if yesno "Are you sure you want to install zsh?"; then
+elif yesno "Are you sure you want to install zsh?"; then
 	ZSH_VERSION=5.9
 	wget https://sourceforge.net/projects/zsh/files/zsh/${ZSH_VERSION}/zsh-${ZSH_VERSION}.tar.xz/download -O zsh-${ZSH_VERSION}.tar.xz
 	tar xvf zsh-${ZSH_VERSION}.tar.xz
@@ -84,20 +78,19 @@ if yesno "Are you sure you want to install zsh?"; then
 	sudo make
 	sudo make install
 
-	cd $dotfiles || exit
+	cd "$dotfiles" || exit
 	rm -rf zsh-${ZSH_VERSION}*
 fi
 
 echo ""
 info "----- prezto -----"
-if [ -e $HOME/.zprezto ]; then
+if [ -e "$HOME"/.zprezto ]; then
 	info "The zprezto is already installed!!"
-fi
-if yesno "Are you sure you want to install prezto?"; then
-	git clone https://github.com/sorin-ionescu/prezto $HOME/.zprezto
-	cd $HOME/.zprezto || exit
+elif yesno "Are you sure you want to install prezto?"; then
+	git clone https://github.com/sorin-ionescu/prezto "$HOME"/.zprezto
+	cd "$HOME"/.zprezto || exit
 	git pull && git submodule update --init --recursive
-	cd $dotfiles || exit
+	cd "$dotfiles" || exit
 fi
 
 #--------------------------------------------------------------#
@@ -105,13 +98,11 @@ fi
 #--------------------------------------------------------------#
 echo ""
 info "----- fzf -----"
-
-if [ -e $HOME/.fzf ]; then
+if [ -e "$HOME"/.fzf ]; then
 	info "The fzf is already installed!!"
-fi
-if yesno "Are you sure you want to install fzf?"; then
-	git clone https://github.com/junegunn/fzf $HOME/.fzf
-	$HOME/.fzf/install
+elif yesno "Are you sure you want to install fzf?"; then
+	git clone https://github.com/junegunn/fzf "$HOME"/.fzf
+	"$HOME"/.fzf/install
 fi
 
 #--------------------------------------------------------------#
@@ -119,13 +110,12 @@ fi
 #--------------------------------------------------------------#
 echo ""
 info "----- nerd font -----"
-
 if yesno "Are you sure you want to install nerd font?"; then
 	# source code pro
 	wget https://github.com/adobe-fonts/source-code-pro/archive/2.010R-ro/1.030R-it.zip
 	unzip 1.030R-it.zip
-	mkdir -p $HOME/.fonts
-	cp source-code-pro-2.010R-ro-1.030R-it/OTF/*.otf $HOME/.fonts/
+	mkdir -p "$HOME"/.fonts
+	cp source-code-pro-2.010R-ro-1.030R-it/OTF/*.otf "$HOME"/.fonts/
 	fc-cache -f -v
 
 	# nerd font
@@ -134,7 +124,7 @@ if yesno "Are you sure you want to install nerd font?"; then
 	./install.sh SourceCodePro
 
 	# cleanup
-	cd $dotfiles || exit
+	cd "$dotfiles" || exit
 	rm -rf 1.030R-it.zip
 	rm -rf source-code-pro-2.010R-ro-1.030R-it
 	rm -rf ./nerd-fonts
@@ -145,13 +135,14 @@ fi
 #--------------------------------------------------------------#
 echo ""
 info "----- docker -----"
-
-if yesno "Are you sure you want to install docker?"; then
-	if [ "$(echo $OS | grep 'Darwin')" ]; then
+if [ -d "$HOME"/.docker ]; then
+	info "The docker is already installed!!"
+elif yesno "Are you sure you want to install docker?"; then
+	if [ "$is_mac" ]; then
 		info "TODO: あとで実装する"
 	fi
 
-	if [ "$(echo $OS | grep 'Ubuntu')" ]; then
+	if [ "$is_ubuntu" ]; then
 		info docker install
 		sudo apt-get update
 		sudo apt install ca-certificates curl gnupg lsb-release
@@ -163,7 +154,7 @@ if yesno "Are you sure you want to install docker?"; then
 		sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 	fi
 
-	if [ "$(echo $OS | grep 'RedHat')" ]; then
+	if [ "$is_redhat" ]; then
 		info docker install
 		sudo yum install -y yum-utils
 		sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
@@ -177,11 +168,11 @@ fi
 #--------------------------------------------------------------#
 echo ""
 info "----- nvm -----"
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
-
-echo ""
-info "Installation completed."
-info "Please run following command \"exec \$SHELL\" to run zsh."
+if [ -d "$HOME"/.nvm ]; then
+	info "The docker is already installed!!"
+elif yesno "Are you sure you want to install docker?"; then
+	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+fi
 
 #--------------------------------------------------------------#
 ##        Python                                                ##
@@ -190,3 +181,7 @@ info "Please run following command \"exec \$SHELL\" to run zsh."
 # TODO: pyenv
 # TODO: pep8
 # TODO: mypy
+
+echo ""
+info "Installation completed."
+info "Please run following command \"exec \$SHELL\" to run zsh."
