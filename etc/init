@@ -3,6 +3,11 @@
 # headerファイルの読み込み
 . "$dotfiles"/etc/header
 
+OS=$("$dotfiles"/bin/os)
+is_mac="$(echo "$OS" | grep 'Darwin')"
+is_ubuntu="$(echo "$OS" | grep 'Ubuntu')"
+is_redhat="$(echo "$OS" | grep 'RedHat')"
+
 echo "
 ██████╗  ██████╗ ████████╗███████╗██╗██╗     ███████╗███████╗
 ██╔══██╗██╔═══██╗╚══██╔══╝██╔════╝██║██║     ██╔════╝██╔════╝
@@ -47,9 +52,10 @@ if [ "$is_mac" ]; then
 elif [ "$is_ubuntu" ]; then
 	info "apt update"
 	sudo apt update
-	PACKAGES="bat build-essential cmake coreutils curl git lsd tmux trash-cli unzip wget xsel"
+	PACKAGES="bat build-essential cmake coreutils curl git libbz2-dev libffi-dev liblzma-dev libopencv-dev libreadline-dev libsqlite3-dev libssl-dev tk-dev tmux trash-cli unzip wget xsel zlib1g-dev"
 	if yesno "Are you sure you want to install the following packages?: ${PACKAGES}"; then
 		sudo apt install -y "$PACKAGES"
+		sudo snap install "lsd"
 	fi
 
 elif [ "$is_redhat" ]; then
@@ -169,18 +175,21 @@ fi
 echo ""
 info "----- nvm -----"
 if [ -d "$HOME"/.nvm ]; then
-	info "The docker is already installed!!"
+	info "The pyenv is already installed!!"
 elif yesno "Are you sure you want to install docker?"; then
 	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
 fi
 
 #--------------------------------------------------------------#
-##        Python                                                ##
+##        pyenv                                                ##
 #--------------------------------------------------------------#
-# TODO: python
-# TODO: pyenv
-# TODO: pep8
-# TODO: mypy
+echo ""
+info "----- pyenv -----"
+if [ -d "$HOME"/.pyenv ]; then
+	info "The pyenv is already installed!!"
+elif yesno "Are you sure you want to install pyenv?"; then
+	git clone https://github.com/pyenv/pyenv.git ~/.pyenv
+fi
 
 echo ""
 info "Installation completed."

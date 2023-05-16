@@ -1,15 +1,10 @@
 export dotfiles=${HOME}/dotfiles
-export is_mac="$(echo $OS | grep 'Darwin')"
-export is_ubuntu="$(echo $OS | grep 'Ubuntu')"
-export is_redhat="$(echo $OS | grep 'RedHat')"
-export OS=$($dotfiles/bin/os)
 
 install: update init clean deploy
 	@exec $$SHELL
 
 update: ## Fetch changes for this repo
 	git pull origin main
-
 init: ## Setup environment settings
 	export PATH=$PATH:$HOME/dotfiles/bin
 	@echo '==> Start to install app using pkg manager.'

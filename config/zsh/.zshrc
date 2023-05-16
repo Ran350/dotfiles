@@ -99,7 +99,7 @@ fi
 
 alias y='yarn'
 alias py='python3'
-alias pien='pipenv'
+# alias pien='pipenv'
 alias v='code'
 
 alias cdd='cd ~/develop'
@@ -125,9 +125,8 @@ fi
 
 # pyenv
 export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/shims:$PATH"
+export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init --path)"
-eval "$(pyenv init -)"
 
 export LC_ALL=ja_JP.UTF-8
 export LANG=ja_JP.UTF-8
