@@ -47,6 +47,7 @@ if [ "$is_mac" ]; then
 	PACKAGES="autoconf bat cmake coreutils curl fontconfig gcc gh git grep lsd pyenv tmux trash-cli wget"
 	if yesno "Are you sure you want to install the following packages?: ${PACKAGES}"; then
 		brew install "$PACKAGES"
+		brew install --cask "warp"
 	fi
 
 elif [ "$is_ubuntu" ]; then
