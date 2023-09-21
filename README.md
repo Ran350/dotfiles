@@ -13,8 +13,8 @@
 First, clone this repository.
 
 ```sh
-$ git clone https://github.com/Ran350/dotfiles ~/dotfiles
-$ cd ~/dotfiles
+gh repo clone Ran350/dotfiles
+cd ~/dotfiles
 ```
 
 ### Setup
