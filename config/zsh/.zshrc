@@ -99,7 +99,8 @@ fi
 
 alias y='yarn'
 alias py='python3'
-# alias pien='pipenv'
+alias pip='pip3'
+alias pien='pipenv'
 alias v='code'
 
 alias cdd='cd ~/develop'
@@ -122,30 +123,3 @@ if [ "$is_mac" ]; then
     # Homebrew
     eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
-
-# pyenv
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init --path)"
-
-export LC_ALL=ja_JP.UTF-8
-export LANG=ja_JP.UTF-8
-export EDITOR='vim'
-export VISUAL='vim'
-export PAGER='less'
-
-# Go
-export PATH=$PATH:$HOME/go/bin
-
-# rust
-# export PATH=$PATH:$HOME/.cargo/bin
-# local bin
-export PATH=$PATH:$HOME/.local/bin
-# dotfiles bin
-export PATH=$PATH:$HOME/dotfiles/bin
-
-# nvm
-export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
-nvm use stable
