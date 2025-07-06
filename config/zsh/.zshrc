@@ -98,6 +98,7 @@ if type trash-put &>/dev/null; then
 fi
 
 alias y='yarn'
+alias p='pnpm'
 alias py='python3'
 alias pip='pip3'
 alias pien='pipenv'
@@ -161,3 +162,4 @@ load-nvmrc() {
 }
 add-zsh-hook chpwd load-nvmrc
 load-nvmrc
+export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
